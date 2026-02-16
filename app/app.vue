@@ -52,9 +52,9 @@ const livekitAgentName = ref(config.public.livekitAgentName as string)
 
 // Today's menu – Bytes with Bites style; replace with API when available
 const menuByCategory = ref<Record<string, string[]>>({
-  BREAKFAST: ['Masala idli', 'Coconut chutney'],
-  LUNCH: ['Kushka rice', 'Pudina raita', 'Veg salan', 'Paneer kabab', 'Chicken serwa', 'Chicken kabab', 'Salad'],
-  SNACKS: ['Fruits', 'Chai & biscuits'],
+  BREAKFAST: ['Set dosa and sambar'],
+  LUNCH: ['Roti', 'Rice', 'Dal fry', 'Aloo gobhi', 'Baigan bharta', 'Salad'],
+  SNACKS: ['Maggi'],
 })
 
 
@@ -181,7 +181,7 @@ html, body {
 }
 
 .todays-menu-category-items {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 400;
   color: #64748b;
   line-height: 1.6;
@@ -199,7 +199,7 @@ html, body {
 }
 
 .rio-caption {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: #64748b;
   background: #f1f5f9;
   padding: 0.625rem 1rem;

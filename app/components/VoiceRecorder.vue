@@ -167,7 +167,6 @@ const handleToggle = async () => {
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
-  padding: 2rem;
   overflow: hidden;
 }
 

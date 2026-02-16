@@ -15,7 +15,7 @@ export interface UseVoiceRecorderReturn {
   toggleRecording: () => Promise<void>
   startRecording: () => Promise<void>
   stopRecording: () => void
-  disconnect: () => void
+  disconnect: () => Promise<void>
 }
 
 export interface UseVoiceRecorderOptions {
@@ -31,7 +31,6 @@ export const useVoiceRecorder = (options: UseVoiceRecorderOptions = {}): UseVoic
   const { public: { livekitTokenUrl = '/api/token' } } = useRuntimeConfig()
   
   const tokenEndpoint = options.tokenEndpoint ?? livekitTokenUrl
-  const roomName = options.roomName ?? 'bizom-cafe'
   const audioOutputElementId = options.audioOutputElementId ?? 'audio_output_component_id'
 
   const isRecording = ref(false)
@@ -43,6 +42,8 @@ export const useVoiceRecorder = (options: UseVoiceRecorderOptions = {}): UseVoic
 
   let timerInterval: ReturnType<typeof setInterval> | null = null
   let room: Room | null = null
+  /** Per-call room name: from options or generated (bizom-cafe-<id>) */
+  let currentRoomName = ''
 
   const formattedTime = computed(() => `${elapsedTime.value}s`)
 
@@ -62,12 +63,18 @@ export const useVoiceRecorder = (options: UseVoiceRecorderOptions = {}): UseVoic
     }
   }
 
-  // New fetch logic to replace TokenSource
+  const generateRoomName = (): string => {
+    if (options.roomName) return options.roomName
+    const id = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID().slice(0, 8)
+      : Math.random().toString(36).slice(2, 10)
+    return `bizom-cafe-${id}`
+  }
+
   const getToken = async () => {
     try {
-      // This calls your Nuxt API route
       const data = await $fetch<{ serverUrl: string, token: string }>('/api/token', {
-        params: { roomName: 'bizom-cafe' }
+        params: { roomName: currentRoomName }
       })
       
       return {
@@ -91,6 +98,7 @@ export const useVoiceRecorder = (options: UseVoiceRecorderOptions = {}): UseVoic
         throw new Error('Microphone access is not supported in this browser')
       }
 
+      currentRoomName = generateRoomName()
       const { serverUrl, participantToken } = await getToken()
 
       room = new Room({
@@ -157,16 +165,28 @@ export const useVoiceRecorder = (options: UseVoiceRecorderOptions = {}): UseVoic
     }
   }
 
-  const disconnect = (): void => {
+  const disconnect = async (): Promise<void> => {
     if (room) {
-      room.disconnect()
+      await room.disconnect(true)
+      if (currentRoomName) {
+        try {
+          await $fetch('/api/room/delete', {
+            method: 'POST',
+            body: { roomName: currentRoomName },
+          })
+        } catch (_) {
+          // Room may already be gone; ignore
+        }
+      }
+      cleanup()
+    } else {
+      cleanup()
     }
-    cleanup()
   }
 
   const toggleRecording = async (): Promise<void> => {
     if (isRecording.value) {
-      disconnect()
+      await disconnect()
     } else {
       await startRecording()
     }

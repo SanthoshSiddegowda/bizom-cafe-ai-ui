@@ -82,6 +82,19 @@ html, body {
   height: 100vh;
   overflow: hidden;
 }
+
+@media (max-width: 768px) {
+  html, body {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #__nuxt {
+    min-height: 100vh;
+    height: auto;
+    overflow: auto;
+  }
+}
 </style>
 
 <style scoped>
@@ -136,6 +149,42 @@ html, body {
   gap: 28px;
 }
 
+/* Mobile: stack vertically, voice first then menu */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+    min-height: 100vh;
+    height: auto;
+  }
+
+  .split-panel-left {
+    flex: 0 0 auto;
+    min-height: 50vh;
+    max-height: 55vh;
+  }
+
+  .left-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .left-header-logo {
+    height: 8vh;
+    max-height: 48px;
+  }
+
+  .split-panel-right {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .right-panel-inner {
+    padding: 16px 20px;
+    gap: 20px;
+  }
+}
+
 /* Premium card-style menu */
 .todays-menu {
   flex-shrink: 0;
@@ -188,6 +237,26 @@ html, body {
   margin: 0;
 }
 
+@media (max-width: 768px) {
+  .todays-menu {
+    padding: 16px 18px;
+    border-radius: 14px;
+  }
+
+  .todays-menu-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .todays-menu-category-title {
+    font-size: 0.9rem;
+  }
+
+  .todays-menu-category-items {
+    font-size: 0.9375rem;
+  }
+}
+
 .rio-image-wrap {
   display: flex;
   flex-direction: column;
@@ -216,6 +285,23 @@ html, body {
   width: auto;
   height: auto;
   object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .rio-image-wrap {
+    margin-top: 1rem;
+  }
+
+  .rio-caption {
+    font-size: 0.9375rem;
+    padding: 0.5rem 0.875rem;
+    max-width: 100%;
+  }
+
+  .rio-image {
+    max-width: 120px;
+    max-height: 20vh;
+  }
 }
 
 .loading-text {

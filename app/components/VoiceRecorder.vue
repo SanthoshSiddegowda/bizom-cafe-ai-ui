@@ -25,7 +25,7 @@
       <button
         :class="['record-button', { 'recording': isRecording }]"
         @click="handleToggle"
-        :disabled="isProcessing || !!error"
+        :disabled="isProcessing"
         :aria-label="buttonAriaLabel"
         :aria-pressed="isRecording"
         type="button"

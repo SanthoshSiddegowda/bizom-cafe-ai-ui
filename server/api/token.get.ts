@@ -1,4 +1,4 @@
-import { AccessToken } from 'livekit-server-sdk';
+import { AccessToken, RoomAgentDispatch, RoomConfiguration } from 'livekit-server-sdk';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -27,7 +27,13 @@ export default defineEventHandler(async (event) => {
     canSubscribe: true 
   });
 
-  // 4. Send the JWT token to the frontend
+  // 4. Dispatch the cafe agent into this room. It uses explicit dispatch
+  //    (agent_name="bizom-cafe"), so without this no agent ever joins.
+  at.roomConfig = new RoomConfiguration({
+    agents: [new RoomAgentDispatch({ agentName: 'bizom-cafe' })],
+  });
+
+  // 5. Send the JWT token to the frontend
   return {
     serverUrl: config.public.livekitUrl,
     token: await at.toJwt(),
